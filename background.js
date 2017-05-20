@@ -73,4 +73,5 @@ chrome.runtime.onMessage.addListener(
       pushToFirebase(1, request.push.value);
       sendResponse({id: request.push.id});
     }
+  return true;
 });
