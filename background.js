@@ -25,12 +25,18 @@ function initApp() {
   });
 }
 
-function loadFirebase(id) {
-  var displayRef = firebase.database().ref('kiwis/' + 1);
-  displayRef.on('value', function(snapshot) {
-    //updateChart(snapshot.val());
-    return snapshot.val();
+function loadFirebase(id, cb) {
+  var displayRef = firebase.database().ref('kiwis/').once('value', function(snapshot) {
+    snap = snapshot.val();
+    if (snap[id] === undefined){
+      firebase.database().ref('kiwis/' + id).set({values: {'sadf': {value: 50}}})
+      return firebase.database().ref('kiwis/' + id);  
+    }
+    else {
+      return firebase.database().ref('kiwis/' + id);
+    }
   });
+  //this is wasteful and could likely be combined with the 
 }
 
 
@@ -62,15 +68,25 @@ window.onload = function() {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.id) {
-      var displayRef = firebase.database().ref('kiwis/' + 1);
-      displayRef.on('value', function(snapshot) {
-       //updateChart(snapshot.val());
-        sendResponse({id: snapshot.val()});
+        var id = request.id
+        var displayRef = firebase.database().ref('kiwis/').once('value', function(snapshot) {
+        snap = snapshot.val();
+        if (snap[id] === undefined){
+          firebase.database().ref('kiwis/' + id).set({values: {'sadf': {value: 50}}})
+          firebase.database().ref('kiwis/' + id).on('value', function(snapshot) {
+            sendResponse({id: snapshot.val()});
+          });  
+        }
+        else {
+          firebase.database().ref('kiwis/' + id).on('value', function(snapshot) {
+            sendResponse({id: snapshot.val()});
+          });
+        }
       });
     }
     console.log(request)
     if (request.push) {
-      pushToFirebase(1, request.push.value);
+      pushToFirebase(request.push.id, request.push.value);
       sendResponse({id: request.push.id});
     }
   return true;
