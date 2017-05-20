@@ -14,24 +14,39 @@ for (var i = 0; i < elements.length; i++) {
             var text = node.nodeValue;
 
             if (text.includes('tiny-kiwi')) {
-                var matched = text.match(/kiwi[\d]*/gi);
+                var kiwiId = text.match(/\d+/)[0];
 
                 // Delete the [tiny-kiwi 234235] line
                 element.textContent = '';
 
                 // Add the vote bar to the post
-                var votebar = drawVoteBar(element.parentElement, matched)
+                drawVoteBar(element.parentElement, kiwiId)
 
-                //SEND MATCHED DIGIT TO FIREBASE
-                chrome.runtime.sendMessage({id: matched}, function(response) {
-                    console.log('firebase response', response);
-
-                    // Size the vote bar to match the votes
-                    sizeVoteBar(votebar, processVotesFromFirebaseResponse(response));
-                })
+                // Fetch the firebase data and draw the votes
+                fetchFirebaseAndSizeVotes(kiwiId);
             }
         }
     }
+}
+
+function getVotebar(id) {
+    return document.getElementById(id);
+}
+
+function fetchFirebaseAndSizeVotes(id) {
+    var votebar = getVotebar(id);
+
+    chrome.runtime.sendMessage({id: id}, function(response) {
+        console.log('kiwiId', id, 'firebase response', response);
+
+        // Size the vote bar to match the votes
+        sizeVoteBar(votebar, processVotesFromFirebaseResponse(response));
+    });
+}
+
+function handleVote(id, value) {
+    chrome.runtime.sendMessage({push: {id: id, value: value}});
+    fetchFirebaseAndSizeVotes(id);
 }
 
 function processVotesFromFirebaseResponse(response) {
@@ -47,15 +62,12 @@ function processVotesFromFirebaseResponse(response) {
         votes[targetBucket].push({key: key, value: value});
     }
 
-    console.log(votes);
     return votes;
 }
 
 function drawVoteBar(element, id) {
-    // Add a vote bar to the bottom of the post
     var votebar = createVoteBarElement(id);
     element.appendChild(votebar);
-    return votebar;
 }
 
 function createVoteBarElement(id) {
@@ -66,7 +78,7 @@ function createVoteBarElement(id) {
         // The vote bucket container
         var voteBucket = document.createElement('div');
         voteBucket.addEventListener("click", function(e) {
-            chrome.runtime.sendMessage({push: {id: votebar.id, value: e.target.value*10}})
+            handleVote(id, e.target.value*10);
         });
         voteBucket.className = 'votebucket';
         voteBucket.value = i;
@@ -77,7 +89,7 @@ function createVoteBarElement(id) {
         voteBucketFiller.className = 'votebucketfiller';
         voteBucketFiller.value = i;
         voteBucket.addEventListener("click", function(e) {
-            chrome.runtime.sendMessage({push: {id: votebar.id, value: e.target.value*10}})
+            handleVote(id, e.target.value*10);
         });
         voteBucket.appendChild(voteBucketFiller);
 
