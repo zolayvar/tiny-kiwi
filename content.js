@@ -50,15 +50,3 @@ function sizeVoteBar(votebar) {
         voteBucket.setAttribute("style","left:" + width*i + "px; height:" + Math.random()*100 + "%");
     }
 }
-
-function sendToFirebase(id, cb) {
-    var req = new XMLHttpRequest();
-    var FIREBASE_URL = "[URL]";
-    req.open("POST", FIREBASE_URL, true);
-    req.onreadystatechange = function() { //Call a function when the state changes.
-        if(req.readyState == 4 && req.status == 200) {
-            cb(req.responseText);
-        }
-    }
-    req.send(id);
-}
