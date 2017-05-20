@@ -63,9 +63,16 @@ function createVoteBarElement() {
     votebar.className += 'votebar';
 
     for (var i = 0; i < numBuckets; i++) {
+        // The vote bucket container
         var voteBucket = document.createElement('div');
         voteBucket.className = 'votebucket';
         votebar.appendChild(voteBucket);
+
+        // The vote bucket filler
+        var voteBucketFiller = document.createElement('div');
+        voteBucketFiller.className = 'votebucketfiller';
+        voteBucket.appendChild(voteBucketFiller);
+
     }
 
     return votebar;
@@ -79,8 +86,11 @@ function sizeVoteBar(votebar, votes) {
     for (var i = 0; i < votebar.childNodes.length; i++) {
         var voteBucket = votebar.childNodes[i];
         var width = voteBucket.offsetWidth - 1;
-        voteBucket.setAttribute("style","left:" + width*i + "px; height:" + votes[i].length/mostVotes*100 + "%");
+        voteBucket.setAttribute("style","left:" + (width+2)*i + "px;");
+
+        var voteBucketFiller = voteBucket.childNodes[0];
+        voteBucketFiller.setAttribute("style", "height:" + votes[i].length/mostVotes*100 + "%");
     }
 }
 
-}, 5000);
+}, 1000);
