@@ -1,15 +1,22 @@
 .votebar {
-	background: lightblue;
+	background: green;
 	height: 1em;
 	width: 100%;
 	position: relative;
 }
 
 .votebucket {
-	background: blue;
-	position: absolute;
-	bottom: 0;
+	background: lightgrey;
 	width: 10%;
 	height: 1em;
 	float: left;
+	position: absolute;
+	bottom: 0;
+}
+
+.votebucketfiller {
+	background: blue;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
 }
