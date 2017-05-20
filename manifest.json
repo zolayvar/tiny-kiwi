@@ -1,8 +1,18 @@
 {
 "manifest_version": 2,
     "name": "Tiny Kiwi",
-    "description": "[your extension description here]",
+    "description": "Predicting on Kiwis",
     "version": "1.0",
+    "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
+    "permissions": [
+      "identity"
+    ],
+    "background": {
+      "page": "background.html"
+    },
+    "browser_action": {
+      "default_popup": "auth.html"
+    },
     "content_scripts": [
         {
             "matches": [
@@ -13,5 +23,13 @@
             ],
             "run_at": "document_end"
         }
+    ],
+   "oauth2": {
+    "client_id": "130896665680-ie2jnvc4bogupd9o314jjo4jllddeh3i.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
     ]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkg4z9ZUe9bTslYFAL9IejxSS3b/C3zSgRt16AV7DL4jg9WdXRAFNeWXCNev8G36Sop+23nhgb+F/de3Ke7QUWTA+4gq/llajL/tSzRIRi8Xz2f8xracyZ3f/RWMEEJcrCSAAr2/nbRGdpv8s49n6rmZL52HGqbUR2GQPvqTnvBsdGNbNC3Qfad3SayyG1HXnqz5q8F8QgAcvuVpUdRNSwSm7GCgTbDPcVTfawi7bjo5MckEo0BhIotOIox2oINaUe7sKad0so4syakh2kfeIumb1Hv0UjN9oUNJDaN6FNny04gkbIxITAWao+pCcc60hhCA0q5MTgTl3vUMjF1YgHwIDAQAB"
 }
