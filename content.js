@@ -1,5 +1,8 @@
+setTimeout(function() {
+
 var elements = document.getElementsByTagName('*');
 var port = chrome.runtime.connect({name: "knockknock"});
+var numBuckets = 10;
 
 for (var i = 0; i < elements.length; i++) {
     var element = elements[i];
@@ -16,25 +19,50 @@ for (var i = 0; i < elements.length; i++) {
                 // Delete the [tiny-kiwi 234235] line
                 element.textContent = '';
 
+                // Add the vote bar to the post
+                var votebar = drawVoteBar(element.parentElement)
+
                 //SEND MATCHED DIGIT TO FIREBASE
                 chrome.runtime.sendMessage({id: matched}, function(response) {
-                    console.log(response);
-                })
+                    console.log('firebase response', response);
 
-                // Add a vote bar to the bottom of the post
-                var votebar = createVoteBarElement()
-                element.parentElement.appendChild(votebar);
-                sizeVoteBar(votebar);
+                    // Size the vote bar to match the votes
+                    sizeVoteBar(votebar, processVotesFromFirebaseResponse(response));
+                })
             }
         }
     }
+}
+
+function processVotesFromFirebaseResponse(response) {
+    var votes = [];
+
+    for (var i = 0; i < numBuckets; i++) {
+        votes.push([]);
+    }
+
+    for (var key in response.id.values) {
+        var value = response.id.values[key].value;
+        var targetBucket = Math.floor(value / numBuckets);
+        votes[targetBucket].push({key: key, value: value});
+    }
+
+    console.log(votes);
+    return votes;
+}
+
+function drawVoteBar(element) {
+    // Add a vote bar to the bottom of the post
+    var votebar = createVoteBarElement()
+    element.appendChild(votebar);
+    return votebar;
 }
 
 function createVoteBarElement() {
     var votebar = document.createElement('div');
     votebar.className += 'votebar';
 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < numBuckets; i++) {
         var voteBucket = document.createElement('div');
         voteBucket.className = 'votebucket';
         votebar.appendChild(voteBucket);
@@ -43,10 +71,12 @@ function createVoteBarElement() {
     return votebar;
 }
 
-function sizeVoteBar(votebar) {
+function sizeVoteBar(votebar, votes) {
     for (var i = 0; i < votebar.childNodes.length; i++) {
         var voteBucket = votebar.childNodes[i];
         var width = voteBucket.offsetWidth - 1;
         voteBucket.setAttribute("style","left:" + width*i + "px; height:" + Math.random()*100 + "%");
     }
 }
+
+}, 5000);
