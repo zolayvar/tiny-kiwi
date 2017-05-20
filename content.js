@@ -48,7 +48,7 @@ function fetchFirebaseAndSizeVotes(id) {
     var votebar = getVotebar(id);
 
     chrome.runtime.sendMessage({id: id}, function(response) {
-        console.log('kiwiId', id, 'firebase response', response);
+        //console.log('kiwiId', id, 'firebase response', response);
 
         // Size the vote bar to match the votes
         sizeVoteBar(votebar, processVotesFromFirebaseResponse(response));
