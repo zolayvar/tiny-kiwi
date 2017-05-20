@@ -14,7 +14,7 @@ for (var i = 0; i < elements.length; i++) {
             var text = node.nodeValue;
 
             if (text.includes('tiny-kiwi')) {
-                var matched = text.match(/kiwi[\d]*/gi);
+                var matched = text.match(/kiwi-[\d]*/gi);
 
                 // Delete the [tiny-kiwi 234235] line
                 element.textContent = '';
@@ -91,4 +91,4 @@ function sizeVoteBar(votebar, votes) {
     }
 }
 
-}, 5000);
+}, 1000);
