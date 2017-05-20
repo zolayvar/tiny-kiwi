@@ -2,4 +2,14 @@
 	background: lightblue;
 	height: 1em;
 	width: 100%;
+	position: relative;
+}
+
+.votebucket {
+	background: blue;
+	position: absolute;
+	bottom: 0;
+	width: 10%;
+	height: 1em;
+	float: left;
 }
