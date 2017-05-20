@@ -72,10 +72,14 @@ function createVoteBarElement() {
 }
 
 function sizeVoteBar(votebar, votes) {
+    var mostVotes = Math.max(...votes.map(function(bucket) {
+        return bucket.length;
+    }));
+
     for (var i = 0; i < votebar.childNodes.length; i++) {
         var voteBucket = votebar.childNodes[i];
         var width = voteBucket.offsetWidth - 1;
-        voteBucket.setAttribute("style","left:" + width*i + "px; height:" + Math.random()*100 + "%");
+        voteBucket.setAttribute("style","left:" + width*i + "px; height:" + votes[i].length/mostVotes*100 + "%");
     }
 }
 
