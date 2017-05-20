@@ -14,7 +14,7 @@ for (var i = 0; i < elements.length; i++) {
                 var matched = text.match(/kiwi[\d]*/gi);
                 //SEND MATCHED DIGIT TO FIREBASE
                 chrome.runtime.sendMessage({id: matched}, function(response) {
-                    console.log(response.id);
+                    console.log(response);
                 })
 
                 // Replace this line with a blue bar

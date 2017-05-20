@@ -25,11 +25,23 @@ function initApp() {
   });
 }
 
+function loadFirebase(id) {
+  var displayRef = firebase.database().ref('kiwis/' + 1);
+  displayRef.on('value', function(snapshot) {
+    //updateChart(snapshot.val());
+    return snapshot.val();
+  });
+}
+
+
 function pushToFirebase(id, value){
  firebase.database().ref('kiwis/' + id + '/values/').once('value', function(snapshot) {
     var kiwisValue = snapshot.val()
     //REPLACE WITH FIREBASE CURRENT USER
-    var uid = 'sadf'
+    var uid = firebase.auth().currentUser;
+    if (!uid){
+      throw "Need to sign in"
+    }
     if (kiwisValue[uid] === undefined){
         //update to make transactional
         firebase.database().ref('kiwis/' + id + '/values/').child(uid).set({value: value})
@@ -51,8 +63,14 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log(sender)
     if (request.id) {
+      var displayRef = firebase.database().ref('kiwis/' + 1);
+      displayRef.on('value', function(snapshot) {
+       //updateChart(snapshot.val());
+        sendResponse({id: snapshot.val()});
+      });
+    }
+    if (request.push) {
       pushToFirebase(request.id);
-      //TEST ECHO SEND
       sendResponse({id: request.id});
     }
 });
