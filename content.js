@@ -20,12 +20,17 @@ for (var i = 0; i < elements.length; i++) {
                 element.textContent = '';
 
                 // Add the vote bar to the post
-                var votebar = drawVoteBar(element.parentElement)
+                var votebar = drawVoteBar(element.parentElement, matched)
 
                 //SEND MATCHED DIGIT TO FIREBASE
                 chrome.runtime.sendMessage({id: matched}, function(response) {
                     console.log('firebase response', response);
-
+                    // Replace this line with a blue bar
+                    var votebar = document.createElement('div');
+                    votebar.className += 'votebar';
+                    votebar.id = matched;
+                    element.parentElement.appendChild(votebar);
+                    element.textContent = '';
                     // Size the vote bar to match the votes
                     sizeVoteBar(votebar, processVotesFromFirebaseResponse(response));
                 })
@@ -51,20 +56,23 @@ function processVotesFromFirebaseResponse(response) {
     return votes;
 }
 
-function drawVoteBar(element) {
+function drawVoteBar(element, id) {
     // Add a vote bar to the bottom of the post
-    var votebar = createVoteBarElement()
+    var votebar = createVoteBarElement(id);
     element.appendChild(votebar);
     return votebar;
 }
 
-function createVoteBarElement() {
+function createVoteBarElement(id) {
     var votebar = document.createElement('div');
     votebar.className += 'votebar';
-
+    votebar.id = id;
     for (var i = 0; i < numBuckets; i++) {
         // The vote bucket container
         var voteBucket = document.createElement('div');
+        voteBucket.addEventListener("click", function(e) {
+            chrome.runtime.sendMessage({push: {id: votebar.id, value: i}})
+        });
         voteBucket.className = 'votebucket';
         votebar.appendChild(voteBucket);
 
@@ -93,4 +101,8 @@ function sizeVoteBar(votebar, votes) {
     }
 }
 
+<<<<<<< HEAD
 }, 1000);
+=======
+}, 5000);
+>>>>>>> 3fa398eeadb1f21306f1f19b221a1875fcdc5876
