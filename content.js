@@ -1,5 +1,6 @@
 
 var numBuckets = 10;
+var kiwiIds = [];
 
 function scanForKiwis() {
     var elements = document.getElementsByTagName('*');
@@ -24,12 +25,20 @@ function scanForKiwis() {
 
                     // Fetch the firebase data and draw the votes
                     fetchFirebaseAndSizeVotes(kiwiId);
+
+                    kiwiIds.push(kiwiId);
                 }
             }
         }
     }
 }
 setInterval(scanForKiwis, 1000);
+
+setInterval(function() {
+    for (var i = 0; i < kiwiIds.length; i++) {
+        fetchFirebaseAndSizeVotes(kiwiIds[i]);
+    }
+}, 1000);
 
 function getVotebar(id) {
     return document.getElementById(id);
@@ -61,7 +70,7 @@ function processVotesFromFirebaseResponse(response) {
     for (var key in response.id.values) {
         var value = response.id.values[key].value;
         var targetBucket = Math.floor(value / numBuckets);
-        votes[targetBucket].push({key: key, value: value});
+        votes[targetBucket].push({key: key, value: value, name: response.id.values[key].name});
     }
 
     return votes;
@@ -82,6 +91,7 @@ function createVoteBarElement(id) {
         voteBucket.addEventListener("click", function(e) {
             handleVote(id, e.target.value*10);
         });
+        voteBucket.addEventListener("mouseover", showVoters);
         voteBucket.className = 'votebucket';
         voteBucket.value = i;
         votebar.appendChild(voteBucket);
@@ -90,14 +100,23 @@ function createVoteBarElement(id) {
         var voteBucketFiller = document.createElement('div');
         voteBucketFiller.className = 'votebucketfiller';
         voteBucketFiller.value = i;
-        voteBucket.addEventListener("click", function(e) {
+        voteBucketFiller.addEventListener("click", function(e) {
             handleVote(id, e.target.value*10);
         });
+        voteBucketFiller.addEventListener("mouseover", showVoters);
         voteBucket.appendChild(voteBucketFiller);
-
     }
 
     return votebar;
+}
+
+function showVoters(e) {
+    var voters = e.target.voters;
+
+    var votersPopup = document.createElement('div');
+    votersPopup.className = 'votersPopup';
+    e.target.appendChild(votersPopup);
+    votersPopup.textContent = voters.join('\n');
 }
 
 function sizeVoteBar(votebar, votes) {
@@ -112,5 +131,13 @@ function sizeVoteBar(votebar, votes) {
 
         var voteBucketFiller = voteBucket.childNodes[0];
         voteBucketFiller.setAttribute("style", "height:" + votes[i].length/mostVotes*100 + "%");
+
+        var voters = votes[i].map(function(vote) {
+            return vote.name;
+        });
+        voteBucket.voters = voters;
+        voteBucketFiller.voters = voters;
     }
 }
+
+
