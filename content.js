@@ -25,12 +25,7 @@ for (var i = 0; i < elements.length; i++) {
                 //SEND MATCHED DIGIT TO FIREBASE
                 chrome.runtime.sendMessage({id: matched}, function(response) {
                     console.log('firebase response', response);
-                    // Replace this line with a blue bar
-                    var votebar = document.createElement('div');
-                    votebar.className += 'votebar';
-                    votebar.id = matched;
-                    element.parentElement.appendChild(votebar);
-                    element.textContent = '';
+
                     // Size the vote bar to match the votes
                     sizeVoteBar(votebar, processVotesFromFirebaseResponse(response));
                 })
@@ -71,14 +66,19 @@ function createVoteBarElement(id) {
         // The vote bucket container
         var voteBucket = document.createElement('div');
         voteBucket.addEventListener("click", function(e) {
-            chrome.runtime.sendMessage({push: {id: votebar.id, value: i}})
+            chrome.runtime.sendMessage({push: {id: votebar.id, value: e.target.value*10}})
         });
         voteBucket.className = 'votebucket';
+        voteBucket.value = i;
         votebar.appendChild(voteBucket);
 
         // The vote bucket filler
         var voteBucketFiller = document.createElement('div');
         voteBucketFiller.className = 'votebucketfiller';
+        voteBucketFiller.value = i;
+        voteBucket.addEventListener("click", function(e) {
+            chrome.runtime.sendMessage({push: {id: votebar.id, value: e.target.value*10}})
+        });
         voteBucket.appendChild(voteBucketFiller);
 
     }
@@ -101,8 +101,5 @@ function sizeVoteBar(votebar, votes) {
     }
 }
 
-<<<<<<< HEAD
 }, 1000);
-=======
-}, 5000);
->>>>>>> 3fa398eeadb1f21306f1f19b221a1875fcdc5876
+
