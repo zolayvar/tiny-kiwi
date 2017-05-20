@@ -71,6 +71,7 @@ chrome.runtime.onMessage.addListener(
     console.log(request)
     if (request.push) {
       pushToFirebase(1, request.push.value);
-      sendResponse({id: request.id});
+      sendResponse({id: request.push.id});
     }
+  return true;
 });
