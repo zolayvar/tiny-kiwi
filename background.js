@@ -62,14 +62,15 @@ window.onload = function() {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.id) {
-      var displayRef = firebase.database().ref('kiwis/' + request.id[0].match(/[\d]+/)[0]);
+      var displayRef = firebase.database().ref('kiwis/' + 1);
       displayRef.on('value', function(snapshot) {
        //updateChart(snapshot.val());
         sendResponse({id: snapshot.val()});
       });
     }
+    console.log(request)
     if (request.push) {
-      pushToFirebase(request.push.id[0].match(/[\d]+/)[0], request.push.value);
+      pushToFirebase(1, request.push.value);
       sendResponse({id: request.id});
     }
 });
