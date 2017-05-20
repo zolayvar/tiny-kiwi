@@ -50,11 +50,11 @@ function pushToFirebase(id, value){
     }
     if (kiwisValue[uid] === undefined){
         //update to make transactional
-        firebase.database().ref('kiwis/' + id + '/values/').child(uid).set({value: value})
+        firebase.database().ref('kiwis/' + id + '/values/').child(uid).set({value: value, name: firebase.auth().currentUser.displayName})
         //firebase.database().ref('/predictions/' + assertionId).child(userId).setValue(prediction)
     } else {
       var updates = {};
-      updates['/kiwis/' + id + '/' + 'values/' + uid] = {value: value};
+      updates['/kiwis/' + id + '/' + 'values/' + uid] = {value: value, name: firebase.auth().currentUser.displayName};
       firebase.database().ref().update(updates)
     }
   })

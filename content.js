@@ -1,32 +1,35 @@
-setTimeout(function() {
 
-var elements = document.getElementsByTagName('*');
 var numBuckets = 10;
 
-for (var i = 0; i < elements.length; i++) {
-    var element = elements[i];
+function scanForKiwis() {
+    var elements = document.getElementsByTagName('*');
 
-    for (var j = 0; j < element.childNodes.length; j++) {
-        var node = element.childNodes[j];
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
 
-        if (node.nodeType === 3) {
-            var text = node.nodeValue;
+        for (var j = 0; j < element.childNodes.length; j++) {
+            var node = element.childNodes[j];
 
-            if (text.includes('tiny-kiwi')) {
-                var kiwiId = text.match(/\d+/)[0];
+            if (node.nodeType === 3) {
+                var text = node.nodeValue;
 
-                // Delete the [tiny-kiwi 234235] line
-                element.textContent = '';
+                if (text.includes('tiny-kiwi')) {
+                    var kiwiId = text.match(/\d+/)[0];
 
-                // Add the vote bar to the post
-                drawVoteBar(element.parentElement, kiwiId)
+                    // Delete the [tiny-kiwi 234235] line
+                    element.textContent = element.textContent.replace(/\[tiny-kiwi.*\]/gi, '');
 
-                // Fetch the firebase data and draw the votes
-                fetchFirebaseAndSizeVotes(kiwiId);
+                    // Add the vote bar to the post
+                    drawVoteBar(element.parentElement, kiwiId)
+
+                    // Fetch the firebase data and draw the votes
+                    fetchFirebaseAndSizeVotes(kiwiId);
+                }
             }
         }
     }
 }
+setInterval(scanForKiwis, 1000);
 
 function getVotebar(id) {
     return document.getElementById(id);
@@ -111,5 +114,3 @@ function sizeVoteBar(votebar, votes) {
         voteBucketFiller.setAttribute("style", "height:" + votes[i].length/mostVotes*100 + "%");
     }
 }
-
-}, 1000);
