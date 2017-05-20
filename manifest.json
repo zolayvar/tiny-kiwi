@@ -1,7 +1,7 @@
 {
-"manifest_version": 2,
+"manifest_version": 5,
     "name": "Tiny Kiwi",
-    "description": "Predicting on Kiwis",
+    "description": "An extension for managing your very small kiwis",
     "version": "1.0",
     "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
     "permissions": [
@@ -15,12 +15,9 @@
     },
     "content_scripts": [
         {
-            "matches": [
-                "*://*/*"
-            ],
-            "js": [
-                "content.js"
-            ],
+            "matches": ["*://*/*"],
+            "js": ["content.js"],
+            "css": ["tinykiwi.css"],
             "run_at": "document_end"
         }
     ],

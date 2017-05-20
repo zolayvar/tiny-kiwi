@@ -42,12 +42,10 @@ function pushToFirebase(id, value){
   })
 }
 
-
 window.onload = function() {
   initApp();
   console.log('loaded')
 };
-
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -57,4 +55,4 @@ chrome.runtime.onMessage.addListener(
       //TEST ECHO SEND
       sendResponse({id: request.id});
     }
-  });
+});
