@@ -1,16 +1,13 @@
 {
-"manifest_version": 2,
+"manifest_version": 4,
     "name": "Tiny Kiwi",
-    "description": "[your extension description here]",
+    "description": "An extension for managing your very small kiwis",
     "version": "1.0",
     "content_scripts": [
         {
-            "matches": [
-                "*://*/*"
-            ],
-            "js": [
-                "content.js"
-            ],
+            "matches": ["*://*/*"],
+            "js": ["content.js"],
+            "css": ["tinykiwi.css"],
             "run_at": "document_end"
         }
     ]

@@ -8,10 +8,11 @@ for (var i = 0; i < elements.length; i++) {
 
         if (node.nodeType === 3) {
             var text = node.nodeValue;
-            var replacedText = text.replace(/kiwi/gi, 'your mom');
-
-            if (replacedText !== text) {
-                element.replaceChild(document.createTextNode(replacedText), node);
+            if (text.includes('tiny-kiwi')) {
+                var votebar = document.createElement('div');
+                votebar.className += 'votebar';
+                element.parentElement.appendChild(votebar);
+                element.textContent = '';
             }
         }
     }
