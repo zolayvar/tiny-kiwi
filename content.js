@@ -11,7 +11,7 @@ for (var i = 0; i < elements.length; i++) {
             var text = node.nodeValue;
 
             if (text.includes('tiny-kiwi')) {
-                var matched = text.match(/kiwi[\d]*/gi);
+                var matched = text.match(/tiny-kiwi-[\d]*/gi);
                 //SEND MATCHED DIGIT TO FIREBASE
                 chrome.runtime.sendMessage({id: matched}, function(response) {
                     console.log(response);
@@ -20,10 +20,16 @@ for (var i = 0; i < elements.length; i++) {
                 // Replace this line with a blue bar
                 var votebar = document.createElement('div');
                 votebar.className += 'votebar';
+                votebar.id = matched;
                 element.parentElement.appendChild(votebar);
                 element.textContent = '';
+                votebar.addEventListener("click", function(e) {
+                    chrome.runtime.sendMessage({push: {id: matched, value: 10}})
+                });
             }
             //REPLACE WITH FRAME
         }
     }
 }
+
+

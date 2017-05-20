@@ -38,7 +38,7 @@ function pushToFirebase(id, value){
  firebase.database().ref('kiwis/' + id + '/values/').once('value', function(snapshot) {
     var kiwisValue = snapshot.val()
     //REPLACE WITH FIREBASE CURRENT USER
-    var uid = firebase.auth().currentUser;
+    var uid = firebase.auth().currentUser.uid;
     if (!uid){
       throw "Need to sign in"
     }
@@ -61,16 +61,15 @@ window.onload = function() {
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    console.log(sender)
     if (request.id) {
-      var displayRef = firebase.database().ref('kiwis/' + 1);
+      var displayRef = firebase.database().ref('kiwis/' + request.id[0].match(/[\d]+/)[0]);
       displayRef.on('value', function(snapshot) {
        //updateChart(snapshot.val());
         sendResponse({id: snapshot.val()});
       });
     }
     if (request.push) {
-      pushToFirebase(request.id);
+      pushToFirebase(request.push.id[0].match(/[\d]+/)[0], request.push.value);
       sendResponse({id: request.id});
     }
 });
