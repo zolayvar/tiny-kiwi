@@ -1,7 +1,6 @@
 setTimeout(function() {
 
 var elements = document.getElementsByTagName('*');
-var port = chrome.runtime.connect({name: "knockknock"});
 var numBuckets = 10;
 
 for (var i = 0; i < elements.length; i++) {
