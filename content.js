@@ -1,4 +1,5 @@
 var elements = document.getElementsByTagName('*');
+var port = chrome.runtime.connect({name: "knockknock"});
 
 for (var i = 0; i < elements.length; i++) {
     var element = elements[i];
@@ -8,6 +9,7 @@ for (var i = 0; i < elements.length; i++) {
 
         if (node.nodeType === 3) {
             var text = node.nodeValue;
+
             if (text.includes('tiny-kiwi')) {
                 var matched = text.match(/kiwi[\d]*/gi);
 
@@ -15,9 +17,9 @@ for (var i = 0; i < elements.length; i++) {
                 element.textContent = '';
 
                 //SEND MATCHED DIGIT TO FIREBASE
-                // sendToFirebase(matched[0].match(/[\d]*/gi), function(response){
-                //     alert(response);
-                // });
+                chrome.runtime.sendMessage({id: matched}, function(response) {
+                    console.log(response);
+                })
 
                 // Add a vote bar to the bottom of the post
                 var votebar = createVoteBarElement()
