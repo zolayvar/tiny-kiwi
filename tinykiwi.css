@@ -3,6 +3,7 @@
 	height: 1em;
 	width: 90%;
 	position: relative;
+	box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);;
 }
 
 .votebucket {
@@ -15,7 +16,7 @@
 }
 
 .votebucketfiller {
-	background: blue;
+	background: cadetblue;
 	position: absolute;
 	width: 100%;
 	bottom: 0;
