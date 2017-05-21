@@ -92,6 +92,7 @@ function createVoteBarElement(id) {
             handleVote(id, e.target.value*10);
         });
         voteBucket.addEventListener("mouseover", showVoters);
+        voteBucket.addEventListener("mouseout", hideVoters);
         voteBucket.className = 'votebucket';
         voteBucket.value = i;
         votebar.appendChild(voteBucket);
@@ -104,6 +105,7 @@ function createVoteBarElement(id) {
             handleVote(id, e.target.value*10);
         });
         voteBucketFiller.addEventListener("mouseover", showVoters);
+        voteBucketFiller.addEventListener("mouseout", hideVoters);
         voteBucket.appendChild(voteBucketFiller);
     }
 
@@ -112,11 +114,25 @@ function createVoteBarElement(id) {
 
 function showVoters(e) {
     var voters = e.target.voters;
+    if (voters.length == 0) {return;}
+    if (e.target.votersPopup) {return;}
 
     var votersPopup = document.createElement('div');
     votersPopup.className = 'votersPopup';
     e.target.appendChild(votersPopup);
-    votersPopup.textContent = voters.join('\n');
+    votersPopup.textContent = voters.join(', ');
+    e.target.votersPopup = votersPopup;
+
+    var rect = e.target.getBoundingClientRect();
+
+    votersPopup.setAttribute("style", "top:" + rect.bottom + "px; left:" + rect.left + "px;");
+}
+
+function hideVoters(e) {
+    if (e.target.votersPopup) {
+        e.target.votersPopup.remove();
+        e.target.votersPopup = null;
+    }
 }
 
 function sizeVoteBar(votebar, votes) {
